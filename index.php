@@ -2,11 +2,9 @@
 
 header("Content-Type: application/json; charset=utf-8");
 
-error_log("=== PHP index.php START ===");
-
 echo json_encode([
-    "status" => "success",
-    "message" => "PHP is running"
+    "php_version" => PHP_VERSION,
+    "pdo" => extension_loaded("PDO"),
+    "pdo_pgsql" => extension_loaded("pdo_pgsql"),
+    "pgsql" => extension_loaded("pgsql")
 ]);
-
-error_log("=== PHP index.php END ===");
