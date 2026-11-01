@@ -5,9 +5,8 @@ header("Content-Type: application/json; charset=utf-8");
 require_once __DIR__ . "/config/database.php";
 
 try {
-    $pdo = getDatabase();
 
-    $result = $pdo->query("SELECT version()")->fetch();
+    $pdo = getDatabase();
 
     echo json_encode([
         "status" => "success",
@@ -15,6 +14,9 @@ try {
     ]);
 
 } catch (Throwable $e) {
+
+    // 詳細なエラーはRenderのログに記録
+    error_log("Database Error: " . $e->getMessage());
 
     http_response_code(500);
 
