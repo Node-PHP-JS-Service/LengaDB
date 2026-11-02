@@ -35,6 +35,13 @@ $name = $data["name"] ?? "";
 $password = $data["password"] ?? "";
 $description = $data["description"] ?? null;
 
+// IPアドレス取得
+$ip = password_hash($_SERVER["REMOTE_ADDR"] ?? "", PASSWORD_DEFAULT);
+
+if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+    response(500, "IP_DETECTION_FAILED", "Could not detect client IP");
+}
+
 // 入力チェック
 if (!is_string($name) || trim($name) === "") {
     response(400, "INVALID_NAME", "Name is required");
@@ -75,20 +82,36 @@ try {
     }
 
     $stmt = $pdo->prepare("
-        INSERT INTO users (name, password_hash, description)
-        VALUES (:name, :password_hash, :description)
+        INSERT INTO users (
+            name,
+            password_hash,
+            description,
+            ip_address
+        )
+        VALUES (
+            :name,
+            :password_hash,
+            :description,
+            CAST(:ip_address AS INET)
+        )
         RETURNING id, name, description, created_at
     ");
 
     $stmt->execute([
         ":name" => trim($name),
         ":password_hash" => $hash,
-        ":description" => $description
+        ":description" => $description,
+        ":ip" => $ip
     ]);
 
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    response(201, "USER_CREATED", "User registered successfully", $user);
+    response(
+        201,
+        "USER_CREATED",
+        "User registered successfully",
+        $user
+    );
 
 } catch (PDOException $e) {
 
