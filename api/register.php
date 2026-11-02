@@ -86,13 +86,11 @@ try {
             name,
             password_hash,
             description,
-            ip_address
         )
         VALUES (
             :name,
             :password_hash,
             :description,
-            CAST(:ip_address AS INET)
         )
         RETURNING id, name, description, created_at
     ");
@@ -101,7 +99,6 @@ try {
         ":name" => trim($name),
         ":password_hash" => $hash,
         ":description" => $description,
-        ":ip" => $ip
     ]);
 
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
