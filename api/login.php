@@ -67,13 +67,21 @@ try {
             "Invalid name or password");
     }
 
-    // 認証成功
-    response(200, "LOGIN_SUCCESS", "Login successful", [
-        "id" => $user["id"],
-        "name" => $user["name"],
-        "description" => $user["description"],
-        "created_at" => $user["created_at"]
+    $stmt2 = $pdo->prepare("
+        INSERT INTO logintoken (account_id, ip)
+        VALUES (:id, :ip)
+        RETURNING *
+    ");
+
+    $stmt2->execute([
+        ":id" => $user["id"],
+        ":ip" => password_hash($_SERVER("REMOTE_ADDR"),PASSWORD_DEFAULT)
     ]);
+
+    $data = $stmt2->fetch(PDO::FETCH_ASSOC);
+
+    // 認証成功
+    response(200, "LOGIN_SUCCESS", "Login successful", $data);
 
 } catch (Throwable $e) {
 
