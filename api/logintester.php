@@ -34,6 +34,23 @@ if ($data === null) {
     exit;
 }
 
+if (is_string($data["ip"]) && trim($data) === "") {
+    http_response_code(400);
+    res("INVALID_JSON", "JSON形式が正しくありません", false);
+    exit;
+}
+
+if (ctype_digit($data["id"])) {
+    http_response_code(400);
+    res("INVALID_JSON", "JSON形式が正しくありません", false);
+    exit;
+}
+
+if (ctype_digit($data["account_id"])) {
+    http_response_code(400);
+    res("INVALID_JSON", "JSON形式が正しくありません", false);
+    exit;
+}
 
 
 ?>
