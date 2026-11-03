@@ -1,4 +1,3 @@
-```php
 <?php
 
 header("Content-Type: application/json; charset=utf-8");
@@ -88,4 +87,3 @@ try {
 
     response(500, "INTERNAL_ERROR", "Internal server error");
 }
-```
