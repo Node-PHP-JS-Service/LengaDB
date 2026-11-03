@@ -67,18 +67,23 @@ try {
             "Invalid name or password");
     }
 
+   $token = bin2hex(random_bytes(32));
+    $tokenHash = hash("sha256", $token);
+    
     $stmt2 = $pdo->prepare("
-        INSERT INTO logintoken (account_id, ip)
-        VALUES (:id, :ip)
-        RETURNING *
+        INSERT INTO logintoken (account_id, token_hash, ip)
+        VALUES (:id, :token_hash, :ip)
     ");
-
+    
     $stmt2->execute([
         ":id" => $user["id"],
-        ":ip" => password_hash($_SERVER("REMOTE_ADDR"),PASSWORD_DEFAULT)
+        ":token_hash" => $tokenHash,
+        ":ip" => password_hash($_SERVER["REMOTE_ADDR"] ?? "", PASSWORD_DEFAULT)
     ]);
-
-    $token = $stmt2->fetch(PDO::FETCH_ASSOC);
+    
+    response(200, "LOGIN_SUCCESS", "Login successful", [
+        "token" => $token
+    ]);
 
     // 認証成功
     response(200, "LOGIN_SUCCESS", "Login successful", $token);
