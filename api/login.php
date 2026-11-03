@@ -78,10 +78,10 @@ try {
         ":ip" => password_hash($_SERVER("REMOTE_ADDR"),PASSWORD_DEFAULT)
     ]);
 
-    $data = $stmt2->fetch(PDO::FETCH_ASSOC);
+    $token = $stmt2->fetch(PDO::FETCH_ASSOC);
 
     // 認証成功
-    response(200, "LOGIN_SUCCESS", "Login successful", $data);
+    response(200, "LOGIN_SUCCESS", "Login successful", $token);
 
 } catch (Throwable $e) {
 
