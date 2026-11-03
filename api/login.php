@@ -71,14 +71,15 @@ try {
     $tokenHash = hash("sha256", $token);
     
     $stmt2 = $pdo->prepare("
-        INSERT INTO logintoken (account_id, token_hash, ip)
-        VALUES (:id, :token_hash, :ip)
+        INSERT INTO logintoken (account_id, token_hash, ip, expires_at)
+        VALUES (:id, :token_hash, :ip, :expires_at)
     ");
     
     $stmt2->execute([
         ":id" => $user["id"],
         ":token_hash" => $tokenHash,
-        ":ip" => password_hash($_SERVER["REMOTE_ADDR"] ?? "", PASSWORD_DEFAULT)
+        ":ip" => password_hash($_SERVER["REMOTE_ADDR"] ?? "", PASSWORD_DEFAULT),
+        ":expires_at" => date("Y-m-d H:i:s", time() + 7 * 24 * 60 * 60)
     ]);
     
     response(200, "LOGIN_SUCCESS", "Login successful", [
