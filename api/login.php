@@ -81,10 +81,6 @@ try {
         ":ip" => password_hash($_SERVER["REMOTE_ADDR"] ?? "", PASSWORD_DEFAULT),
         ":expires_at" => date("Y-m-d H:i:s", time() + 7 * 24 * 60 * 60)
     ]);
-    
-    response(200, "LOGIN_SUCCESS", "Login successful", [
-        "token" => $token
-    ]);
 
     // 認証成功
     response(200, "LOGIN_SUCCESS", "Login successful", $token);
